@@ -519,7 +519,8 @@
                     <button class="filter-btn active" data-filter="all">All</button>
                     <button class="filter-btn" data-filter="games">Games</button>
                     <button class="filter-btn" data-filter="business-tools">Business Tools</button>
-                    <button class="filter-btn" data-filter="repo-projects">Repo Projects</button>
+                    <button class="filter-btn" data-filter="machine-vision">Machine Vision</button>
+                    <button class="filter-btn" data-filter="intelligent-system">Intelligent System</button>
                     <button class="filter-btn" data-filter="experiments">Experiments</button>
                 </div>
                 <div class="projects-grid">
@@ -557,6 +558,88 @@
                         </div>
                     </article>
 
+                    <article class="project-card" data-category="machine-vision">
+                        <div class="project-image">🔐</div>
+                        <div class="project-content">
+                            <h3 class="project-title">Face Security</h3>
+                            <p class="project-description">A machine vision project focused on face-based security workflows and user recognition.</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Machine Vision</span>
+                                <span class="tech-tag">Computer Vision</span>
+                                <span class="tech-tag">Python</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="file:///C:/Users/Jb%20Home/OneDrive/Documents/CODES/NEW%20CODES/repos/faceSecurity" class="project-link" target="_blank">Open Folder</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card" data-category="machine-vision">
+                        <div class="project-image">🖼️</div>
+                        <div class="project-content">
+                            <h3 class="project-title">Image Process</h3>
+                            <p class="project-description">An image processing project exploring transformations, filtering, and visual data enhancement.</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Image Processing</span>
+                                <span class="tech-tag">Computer Vision</span>
+                                <span class="tech-tag">Python</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="file:///C:/Users/Jb%20Home/OneDrive/Documents/CODES/NEW%20CODES/repos/ImageProcess" class="project-link" target="_blank">Open Folder</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card" data-category="machine-vision">
+                        <div class="project-image">🤖</div>
+                        <div class="project-content">
+                            <h3 class="project-title">MachineVision</h3>
+                            <p class="project-description">A machine vision build for analyzing visual inputs and extracting useful automated insights.</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Machine Vision</span>
+                                <span class="tech-tag">OpenCV</span>
+                                <span class="tech-tag">Python</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="file:///C:/Users/Jb%20Home/OneDrive/Documents/CODES/NEW%20CODES/repos/MachineVision" class="project-link" target="_blank">Open Folder</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card" data-category="machine-vision">
+                        <div class="project-image">🎮</div>
+                        <div class="project-content">
+                            <h3 class="project-title">SimpleGame</h3>
+                            <p class="project-description">A simple interactive project using visual logic and gameplay mechanics as a machine vision practice app.</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Game Logic</span>
+                                <span class="tech-tag">Computer Vision</span>
+                                <span class="tech-tag">Python</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="file:///C:/Users/Jb%20Home/OneDrive/Documents/CODES/NEW%20CODES/repos/SimpleGame" class="project-link" target="_blank">Open Folder</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card" data-category="intelligent-system">
+                        <div class="project-image">🧠</div>
+                        <div class="project-content">
+                            <h3 class="project-title">Final Project (Intelligent System)</h3>
+                            <p class="project-description">A capstone intelligent system project showcasing practical AI-driven decision support and automation.</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Intelligent Systems</span>
+                                <span class="tech-tag">AI</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Database</span>
+                                <span class="tech-tag">Inventory</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="file:///C:/Users/Jb%20Home/OneDrive/Documents/CODES/NEW%20CODES/Final%20Project" class="project-link" target="_blank">Open Folder</a>
+                            </div>
+                        </div>
+                    </article>
+
                     <article class="project-card" data-category="experiments">
                         <div class="project-image">✨</div>
                         <div class="project-content">
@@ -572,7 +655,6 @@
                         </div>
                     </article>
                 </div>
-                <p class="meta" id="repoProjectsStatus">Loading projects from GitHub...</p>
                 <p class="project-empty" id="projectEmptyState">No projects in this category yet.</p>
             </div>
         </section>
@@ -620,20 +702,10 @@
         document.querySelectorAll('.fade-in').forEach((el) => io.observe(el));
 
         const filterButtons = document.querySelectorAll('.filter-btn');
-        const projectsGrid = document.querySelector('.projects-grid');
+        const projectCards = document.querySelectorAll('.project-card');
         const emptyState = document.getElementById('projectEmptyState');
-        const repoProjectsStatus = document.getElementById('repoProjectsStatus');
-        const githubRepo = {
-            owner: 'Senkatzu',
-            name: 'OperatingSystems',
-            branch: 'Portfolio',
-            folderPath: 'Projects'
-        };
-        let activeFilter = 'all';
 
         function applyProjectFilter(filter) {
-            activeFilter = filter;
-            const projectCards = document.querySelectorAll('.project-card');
             let visibleCount = 0;
             projectCards.forEach((card) => {
                 const cardCategory = card.dataset.category;
@@ -651,71 +723,6 @@
                 applyProjectFilter(button.dataset.filter);
             });
         });
-
-        function formatProjectName(name) {
-            return name.replace(/[-_]/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-        }
-
-        function createRepoProjectCard(name, path) {
-            const article = document.createElement('article');
-            article.className = 'project-card';
-            article.dataset.category = 'repo-projects';
-
-            article.innerHTML = `
-                <div class="project-image">📁</div>
-                <div class="project-content">
-                    <h3 class="project-title">${formatProjectName(name)}</h3>
-                    <p class="project-description">Auto-loaded from the repository Projects folder.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">GitHub</span>
-                        <span class="tech-tag">Repository</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/${githubRepo.owner}/${githubRepo.name}/tree/${githubRepo.branch}/${encodeURI(path)}" class="project-link" target="_blank">Open Folder</a>
-                    </div>
-                </div>
-            `;
-
-            return article;
-        }
-
-        async function loadRepoProjects() {
-            if (!projectsGrid) return;
-
-            const apiUrl = `https://api.github.com/repos/${githubRepo.owner}/${githubRepo.name}/contents/${encodeURIComponent(githubRepo.folderPath)}?ref=${encodeURIComponent(githubRepo.branch)}`;
-
-            try {
-                const response = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github+json' } });
-                if (!response.ok) throw new Error(`GitHub API request failed (${response.status})`);
-
-                const items = await response.json();
-                const folders = items
-                    .filter((item) => item.type === 'dir')
-                    .sort((a, b) => a.name.localeCompare(b.name));
-
-                const existingRepoCards = projectsGrid.querySelectorAll('[data-category="repo-projects"]');
-                existingRepoCards.forEach((card) => card.remove());
-
-                folders.forEach((folder) => {
-                    projectsGrid.appendChild(createRepoProjectCard(folder.name, folder.path));
-                });
-
-                if (repoProjectsStatus) {
-                    repoProjectsStatus.textContent = folders.length
-                        ? `Loaded ${folders.length} projects from GitHub.`
-                        : 'No project folders found in the repository Projects directory.';
-                }
-
-                applyProjectFilter(activeFilter);
-            } catch (error) {
-                if (repoProjectsStatus) {
-                    repoProjectsStatus.textContent = 'Unable to load repo projects right now.';
-                }
-                console.error(error);
-            }
-        }
-
-        loadRepoProjects();
 
         const bgAudio = document.getElementById('bgAudio');
         if (bgAudio) {
