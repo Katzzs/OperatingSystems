@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Source | JB Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #070b14;
+            --surface: rgba(13, 19, 35, 0.92);
+            --border: rgba(137, 175, 255, 0.26);
+            --text: #e9f0ff;
+            --muted: #a8bad8;
+            --accent: #67e8f9;
+            --accent2: #818cf8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(103, 232, 249, 0.2), transparent 34%),
+                radial-gradient(circle at 80% 20%, rgba(129, 140, 248, 0.24), transparent 36%),
+                #070b14;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            background: rgba(8, 12, 24, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-inner {
+            width: min(1400px, 94%);
+            margin: 0 auto;
+            padding: 0.9rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .logo { font-weight: 700; color: var(--accent); text-decoration: none; }
+
+        .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .back-link, .github-link {
+            text-decoration: none;
+            color: #d7e6ff;
+            border: 1px solid rgba(129, 140, 248, 0.5);
+            border-radius: 10px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .back-link:hover, .github-link:hover { background: rgba(129, 140, 248, 0.2); }
+
+        main {
+            width: min(1400px, 94%);
+            margin: 0 auto;
+            padding: 1.25rem 0 2rem;
+        }
+
+        .page-title { font-size: 1.45rem; margin-bottom: 0.25rem; }
+        .page-subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+        .viewer {
+            display: grid;
+            grid-template-columns: minmax(220px, 280px) 1fr;
+            gap: 0.85rem;
+            min-height: calc(100vh - 180px);
+        }
+
+        .file-list {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0.65rem;
+            overflow: auto;
+            max-height: calc(100vh - 160px);
+        }
+
+        .file-list h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            padding: 0.35rem 0.5rem 0.55rem;
+        }
+
+        .folder-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            padding: 0.45rem 0.5rem 0.2rem;
+            font-weight: 600;
+        }
+
+        .file-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.76rem;
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            cursor: pointer;
+            word-break: break-all;
+        }
+
+        .file-btn:hover { background: rgba(129, 140, 248, 0.15); }
+
+        .file-btn.active {
+            background: rgba(103, 232, 249, 0.16);
+            color: #d8fcff;
+            border: 1px solid rgba(103, 232, 249, 0.35);
+        }
+
+        .code-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 420px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 0.9rem;
+            border-bottom: 1px solid var(--border);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            flex-wrap: wrap;
+        }
+
+        .code-path { color: var(--muted); font-size: 0.75rem; }
+
+        .code-body { flex: 1; overflow: auto; padding: 0.85rem 0; }
+
+        pre {
+            margin: 0;
+            padding: 0 1rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            tab-size: 4;
+            white-space: pre;
+        }
+
+        .line-numbers {
+            display: inline-block;
+            min-width: 2.5rem;
+            padding-right: 1rem;
+            color: rgba(168, 186, 216, 0.45);
+            user-select: none;
+            text-align: right;
+        }
+
+        .status { padding: 2rem 1rem; text-align: center; color: var(--muted); }
+
+        .error-box {
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            background: rgba(248, 113, 113, 0.1);
+            color: #fecaca;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 860px) {
+            .viewer { grid-template-columns: 1fr; }
+            .file-list { max-height: 240px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer" aria-hidden="true"></div>
+
+    <header>
+        <div class="header-inner">
+            <a class="logo" href="index.html">JB Portfolio</a>
+            <div class="header-actions">
+                <a class="github-link" id="githubFolderLink" href="#" target="_blank" rel="noopener noreferrer" hidden>View on GitHub</a>
+                <a class="back-link" href="index.html#projects">← Back to Projects</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title" id="projectTitle">Project Source</h1>
+        <p class="page-subtitle" id="projectSubtitle">Browse all source files in this project folder.</p>
+        <div class="viewer" id="viewer" hidden>
+            <aside class="file-list" aria-label="Source files">
+                <h2>Folder contents</h2>
+                <div id="fileButtons"></div>
+            </aside>
+            <section class="code-panel">
+                <div class="code-header">
+                    <span id="activeFileName">—</span>
+                    <span class="code-path" id="activeFilePath"></span>
+                </div>
+                <div class="code-body" id="codeBody">
+                    <p class="status">Select a file to view its source code.</p>
+                </div>
+            </section>
+        </div>
+        <div id="loadError" class="error-box" hidden></div>
+        <p class="status" id="loadingStatus">Loading project folder…</p>
+    </main>
+
+    <script>
+        const GITHUB = {
+            owner: "Katzzs",
+            repo: "OperatingSystems",
+            branch: "main",
+            projectsRoot: "Projects"
+        };
+
+        const VIEWABLE_EXT = new Set([
+            ".py", ".pyw", ".js", ".ts", ".html", ".css", ".md", ".txt",
+            ".json", ".xml", ".ps1", ".bat", ".sh", ".yml", ".yaml",
+            ".ini", ".cfg", ".spec", ".sln", ".csproj", ".pyproj"
+        ]);
+
+        const PROJECTS = {
+            faceSecurity: { title: "Face Security", folder: "faceSecurity" },
+            ImageProcess: { title: "Image Process", folder: "ImageProcess" },
+            MachineVision: { title: "MachineVision", folder: "MachineVision" },
+            SimpleGame: { title: "SimpleGame", folder: "SimpleGame" },
+            "Final Project": { title: "Final Project (Intelligent System)", folder: "Final Project" }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const projectKey = params.get("project");
+        const project = PROJECTS[projectKey];
+
+        const projectTitle = document.getElementById("projectTitle");
+        const projectSubtitle = document.getElementById("projectSubtitle");
+        const viewer = document.getElementById("viewer");
+        const fileButtons = document.getElementById("fileButtons");
+        const codeBody = document.getElementById("codeBody");
+        const activeFileName = document.getElementById("activeFileName");
+        const activeFilePath = document.getElementById("activeFilePath");
+        const loadError = document.getElementById("loadError");
+        const loadingStatus = document.getElementById("loadingStatus");
+        const githubFolderLink = document.getElementById("githubFolderLink");
+
+        let projectRootPath = "";
+        let fileEntries = [];
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function githubTreeUrl(folderPath) {
+            const encoded = folderPath.split("/").map(encodeURIComponent).join("/");
+            return `https://github.com/${GITHUB.owner}/${GITHUB.repo}/tree/${GITHUB.branch}/${encoded}`;
+        }
+
+        function githubApiContentsUrl(folderPath) {
+            const encoded = folderPath.split("/").map(encodeURIComponent).join("/");
+            return `https://api.github.com/repos/${GITHUB.owner}/${GITHUB.repo}/contents/${encoded}?ref=${GITHUB.branch}`;
+        }
+
+        function rawFileUrl(repoPath) {
+            const encoded = repoPath.split("/").map(encodeURIComponent).join("/");
+            return `https://raw.githubusercontent.com/${GITHUB.owner}/${GITHUB.repo}/${GITHUB.branch}/${encoded}`;
+        }
+
+        function localFileUrl(repoPath) {
+            return repoPath.split("/").map(encodeURIComponent).join("/");
+        }
+
+        function isViewableFile(name) {
+            const dot = name.lastIndexOf(".");
+            if (dot === -1) return false;
+            return VIEWABLE_EXT.has(name.slice(dot).toLowerCase());
+        }
+
+        function renderCode(text) {
+            const lines = text.replace(/\r\n/g, "\n").split("\n");
+            const pad = String(lines.length).length;
+            const numbered = lines.map((line, i) => {
+                const num = String(i + 1).padStart(pad, " ");
+                return `<span class="line-numbers">${num}</span>${escapeHtml(line)}`;
+            }).join("\n");
+            codeBody.innerHTML = `<pre>${numbered}</pre>`;
+        }
+
+        async function fetchGithubDirectory(dirPath) {
+            const res = await fetch(githubApiContentsUrl(dirPath));
+            if (!res.ok) {
+                throw new Error(`GitHub API ${res.status} for ${dirPath}`);
+            }
+            return res.json();
+        }
+
+        async function collectFiles(dirPath, relativePrefix) {
+            const items = await fetchGithubDirectory(dirPath);
+            const files = [];
+
+            for (const item of items) {
+                const rel = relativePrefix ? `${relativePrefix}/${item.name}` : item.name;
+
+                if (item.type === "dir") {
+                    const nested = await collectFiles(item.path, rel);
+                    files.push(...nested);
+                } else if (item.type === "file" && isViewableFile(item.name)) {
+                    files.push({
+                        name: item.name,
+                        relativePath: rel,
+                        repoPath: item.path,
+                        downloadUrl: item.download_url
+                    });
+                }
+            }
+
+            return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+        }
+
+        async function loadFromGithub() {
+            fileEntries = await collectFiles(projectRootPath, "");
+            if (fileEntries.length === 0) {
+                throw new Error("No viewable source files found in this folder.");
+            }
+        }
+
+        async function loadFromLocalManifest() {
+            const manifests = {
+                faceSecurity: [
+                    "faceSecurity/faceSecurity.py",
+                    "faceSecurity/test_face_detect.py"
+                ],
+                ImageProcess: [
+                    "ImageProcess/ImageProcess.pyw",
+                    "ImageProcess/segmentation.py",
+                    "ImageProcess/convolution_params.py",
+                    "ImageProcess/adaptive_binarization.py"
+                ],
+                MachineVision: [
+                    "MachineVision/MachineVision.py",
+                    "MachineVision/demo.py"
+                ],
+                SimpleGame: ["SimpleGame/SimpleGame.py"],
+                "Final Project": [
+                    "main.py",
+                    "logic/decision_engine.py",
+                    "logic/behavior_tracker.py",
+                    "logic/barcode_scanner.py",
+                    "services/data_service.py",
+                    "ui/dashboard.py",
+                    "ui/management.py",
+                    "ui/reports.py",
+                    "ui/settings.py",
+                    "ui/scan_dialog.py",
+                    "ui/popup_recommendation.py",
+                    "utils/helpers.py",
+                    "utils/excel_utils.py",
+                    "requirements.txt",
+                    "README.md"
+                ]
+            };
+
+            const relFiles = manifests[projectKey] || [];
+            const loaded = [];
+
+            for (const rel of relFiles) {
+                const repoPath = `${projectRootPath}/${rel}`;
+                const res = await fetch(localFileUrl(repoPath));
+                if (!res.ok) continue;
+                loaded.push({
+                    name: rel.split("/").pop(),
+                    relativePath: rel,
+                    repoPath,
+                    downloadUrl: localFileUrl(repoPath),
+                    local: true
+                });
+            }
+
+            if (loaded.length === 0) throw new Error("local-failed");
+            fileEntries = loaded;
+        }
+
+        async function loadFile(entry, buttonEl) {
+            document.querySelectorAll(".file-btn").forEach((b) => b.classList.remove("active"));
+            if (buttonEl) buttonEl.classList.add("active");
+
+            activeFileName.textContent = entry.name;
+            activeFilePath.textContent = entry.repoPath;
+            codeBody.innerHTML = '<p class="status">Loading file…</p>';
+
+            try {
+                const res = await fetch(entry.downloadUrl);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                renderCode(await res.text());
+            } catch (err) {
+                codeBody.innerHTML = `<div class="error-box">Could not load this file. (${escapeHtml(err.message)})</div>`;
+            }
+        }
+
+        function renderFileList() {
+            fileButtons.innerHTML = "";
+            let lastFolder = "";
+
+            fileEntries.forEach((entry, index) => {
+                const parts = entry.relativePath.split("/");
+                if (parts.length > 1) {
+                    const folder = parts.slice(0, -1).join("/");
+                    if (folder !== lastFolder) {
+                        lastFolder = folder;
+                        const label = document.createElement("div");
+                        label.className = "folder-label";
+                        label.textContent = folder + "/";
+                        fileButtons.appendChild(label);
+                    }
+                }
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "file-btn";
+                btn.textContent = entry.name;
+                btn.title = entry.relativePath;
+                btn.addEventListener("click", () => loadFile(entry, btn));
+                fileButtons.appendChild(btn);
+                if (index === 0) btn.classList.add("active");
+            });
+        }
+
+        function showError(message, hint) {
+            loadingStatus.hidden = true;
+            loadError.hidden = false;
+            loadError.innerHTML = `<strong>${escapeHtml(message)}</strong>${hint ? `<br><br>${escapeHtml(hint)}` : ""}`;
+        }
+
+        async function init() {
+            if (!project) {
+                showError("Unknown project.", "Open a project from the portfolio Projects section.");
+                return;
+            }
+
+            projectRootPath = `${GITHUB.projectsRoot}/${project.folder}`;
+            document.title = `${project.title} Source | JB Portfolio`;
+            projectTitle.textContent = project.title;
+            projectSubtitle.textContent = `Files in ${projectRootPath}/`;
+
+            githubFolderLink.href = githubTreeUrl(projectRootPath);
+            githubFolderLink.hidden = false;
+
+            try {
+                try {
+                    await loadFromGithub();
+                } catch (githubErr) {
+                    await loadFromLocalManifest();
+                }
+
+                renderFileList();
+                loadingStatus.hidden = true;
+                viewer.hidden = false;
+                await loadFile(fileEntries[0], fileButtons.querySelector(".file-btn"));
+            } catch (err) {
+                showError(
+                    "Could not load project files.",
+                    "Make sure the Projects folder is pushed to github.com/Katzzs/OperatingSystems on the main branch, then refresh. You can also use the View on GitHub link once the folder exists."
+                );
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
